@@ -50,7 +50,7 @@ Below are typical images from confocal microscopy we work with (channels left to
 
 ### Spot detection 
 (DoG filtering + local max filter in the [x, y, z, kernel size] dimensions) <br/>
-Zoom in:
+Zoom in:  
 <img src="/readme_images/spot_detection_in_situ.png" width="450">
 
 ### Nuclei segmentation from DAPI 
@@ -64,28 +64,8 @@ Zoom in:
 <img src="/readme_images/segmented_DAPI_CM.png" width="450">
 
 ### Cytoplasm segmentation from cell mask 
-(GMM thresholding for mask segmentation + watershed segmentation of touching cells):
-Zoom in:
-
-### Spot detection 
-(DoG filtering + local max filter in the [x, y, z, kernel size] dimensions)
-Zoom in:
-
-### Nuclei segmentation from DAPI 
-(bi class Otsu thresholding)
-Zoom in:
-
-### Nuclei segmentation from cell mask 
-(bi class UNET trained on images segmented with the above method):
-Zoom in
-
-### Cytoplasm segmentation from cell mask 
-(GMM thresholding for mask segmentation + watershed segmentation of touching cells):
-Zoom in:
-
-
-
-
-
+(GMM thresholding for mask segmentation + watershed segmentation of touching cells):  
+Zoom in:  
+<img src="/readme_images/combined.png" width="450">
 
 
