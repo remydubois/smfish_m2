@@ -97,7 +97,7 @@ The tensorboard implemented allows one to track segmentation results on the test
 This module implements attemps to generate cell landscape using variational autoencoders. No approach has yielded satisying results as of now. 
 
 ### Classification
-Contains all the script necessary to train classification model. Are implemented a pre-trained Inception v3 and a Squeezenet.
+Contains all the script necessary to train classification model. Are implemented a pre-trained Inception v3 and a Squeezenet, along with various sub models used to reproduce some papers.
 - *Augmentation.py* defines all the data augmentation operations used for training the model. All those operations were heavily optimized for speed.
 - *Preprocessing.py* defines the Luigi tasks called before training the model, i.e. turning the raw data (multiple unstructured jsons) into cleaner dataframes. Those dataframes carry only indices (sets of points defining the cell membrane, nuclei membrane, mRNAs).
 - *Callbacks.py* defines the keras callbacks used during training (tensorboard and others)
