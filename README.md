@@ -45,7 +45,7 @@ The core of this project is to study subcellular localization patterns of mRNAs.
 - Luigi pipelines for image db handling, model training and evaluation
 
 ## Example of low level modules 
-Below are typical images from confocal microscopy we work with (channels left to right: smFISH, DAPI, cell mask): <br/>
+Below are typical images from confocal microscopy we work with (channels left to right: smFISH, cell mask, DAPI): <br/>
 <img src="/readme_images/multichannel.png" width="450">
 
 ### Spot detection 
@@ -59,7 +59,7 @@ Zoom in: <br/>
 <img src="/readme_images/segmented_DAPI.png" width="450">
 
 ### Nuclei segmentation from cell mask 
-(bi class UNET trained on images segmented with the above method):  
+(bi class UNET trained on images segmented with the above method for the ground truth (checked by hand), raw cell mask images as input):  
 Zoom in:  
 <img src="/readme_images/segmented_DAPI_CM.png" width="450">
 
@@ -68,6 +68,9 @@ Zoom in:
 Zoom in:  
 <img src="/readme_images/combined.png" width="700">
 
-
-
-
+## Code architecture
+### Spot detection module
+#### Image sub module
+Contains all the low level features such as: filtering (gaussian flavored filters or FFT filtering) (filters.py), segmentation (morphological segmentation of nuclei or cytoplasms) (segmentation.py), spot detection (spotdetector.py), along with some visualization scripts (basic) (vizu.py), and all the utils.  
+The **Image.py** file defines the mother classes (i.e. FQimage for the smFISH channel, DAPIimage, CYTimage) which call all the methods defined in the files mentioned above.
+- Contains parallelization scripts for segmentation  
