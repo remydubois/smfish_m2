@@ -74,4 +74,4 @@ Zoom in:
 Contains all the low level features such as: filtering (gaussian flavored filters or FFT filtering) in *filters*, segmentation (morphological segmentation of nuclei or cytoplasms) (segmentation.py), spot detection in *spotdetector.py*, along with some visualization scripts (basic) in *vizu.py* , and all the utils. The *tools.py* file contains some parallelization tools.  *Tools.py*, *useable_functions.py*, *fitters.py*, *smFISHanalyser.py* could be disregarded as they implement deprecated methods.  
    
 The **Image.py** file defines the mother classes (i.e. FQimage for the smFISH channel, DAPIimage, CYTimage) which call all the methods defined in the files mentioned above.
-- Contains parallelization scripts for segmentation  
+- Contains parallelization scripts for segmentation  __under__
