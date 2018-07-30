@@ -1,0 +1,54 @@
+\contentsline {section}{\numberline {1}Biological and Mathematical context}{1}
+\contentsline {subsection}{\numberline {1.1}Biological context}{1}
+\contentsline {subsubsection}{\numberline {1.1.1}Gene Expression}{1}
+\contentsline {paragraph}{Gene Expression process}{1}
+\contentsline {paragraph}{Expression Level}{1}
+\contentsline {paragraph}{RNA Localization}{1}
+\contentsline {subsubsection}{\numberline {1.1.2}Expression patterns}{1}
+\contentsline {paragraph}{Localization patterns}{1}
+\contentsline {subsubsection}{\numberline {1.1.3}Place of this project}{2}
+\contentsline {subsection}{\numberline {1.2}Mathematical Context}{2}
+\contentsline {subsubsection}{\numberline {1.2.1}Image analysis}{2}
+\contentsline {paragraph}{Segmentation}{2}
+\contentsline {paragraph}{Spot detection}{2}
+\contentsline {subsubsection}{\numberline {1.2.2}Computer vision}{2}
+\contentsline {paragraph}{Recent history: a convolutional-based approach}{2}
+\contentsline {paragraph}{A very quick introduction to filtering and pattern recognition}{2}
+\contentsline {paragraph}{Pros and cons}{2}
+\contentsline {paragraph}{Applications to biomedical case study}{2}
+\contentsline {subsubsection}{\numberline {1.2.3}Learning and Domain Adaptation}{2}
+\contentsline {paragraph}{Learning Phase}{2}
+\contentsline {paragraph}{Domain Adaptation}{2}
+\contentsline {section}{\numberline {2}Natural Data observation}{2}
+\contentsline {subsection}{\numberline {2.1}Spot detection}{2}
+\contentsline {subsubsection}{\numberline {2.1.1}Gaussian Kernels}{2}
+\contentsline {subsection}{\numberline {2.2}Segmentation}{2}
+\contentsline {subsubsection}{\numberline {2.2.1}Thresholding segmention}{2}
+\contentsline {subsubsection}{\numberline {2.2.2}Single threshold-based methods}{2}
+\contentsline {paragraph}{GMM}{2}
+\contentsline {paragraph}{KMeans (Otsu)}{2}
+\contentsline {subsubsection}{\numberline {2.2.3}Multi threshold-based methods}{2}
+\contentsline {paragraph}{GMM}{2}
+\contentsline {paragraph}{Otsu}{2}
+\contentsline {subsubsection}{\numberline {2.2.4}Graph based segmentation}{3}
+\contentsline {paragraph}{Oversegmentation}{3}
+\contentsline {paragraph}{Region adjacency graphs}{3}
+\contentsline {paragraph}{Hierarchical graph merge}{3}
+\contentsline {section}{\numberline {3}Generative Model}{3}
+\contentsline {subsection}{\numberline {3.1}Feature engineering}{3}
+\contentsline {subsection}{\numberline {3.2}Image generation process}{3}
+\contentsline {subsubsection}{\numberline {3.2.1}Morphological structure}{3}
+\contentsline {section}{\numberline {4}Transfer Learning strategies}{3}
+\contentsline {subsection}{\numberline {4.1}Model choice}{3}
+\contentsline {subsubsection}{\numberline {4.1.1}Inception}{3}
+\contentsline {paragraph}{Architecture}{3}
+\contentsline {paragraph}{Strategy}{3}
+\contentsline {subsubsection}{\numberline {4.1.2}Squeezenet}{3}
+\contentsline {paragraph}{Architecture}{3}
+\contentsline {paragraph}{Strategy}{3}
+\contentsline {subsubsection}{\numberline {4.1.3}Comparison}{3}
+\contentsline {paragraph}{Versatility}{3}
+\contentsline {paragraph}{Scalability (deployment)}{3}
+\contentsline {paragraph}{Accuracy}{3}
+\contentsline {paragraph}{Final word}{3}
+\contentsline {subsection}{\numberline {4.2}Off-the-shelf training}{3}

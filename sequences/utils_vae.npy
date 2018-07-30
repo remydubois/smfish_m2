@@ -1,0 +1,8 @@
+def _stack_batch(l):
+    """
+    Takes a batch of indices of type array([[xs],[ys],[channels]]) and return one array of kind
+    array([[positions in batch], [xs], [ys], [channels]])
+    :param l: batch of indices
+    :return:
+    """
+    return numpy.hstack([numpy.vstack(([idx, ] * m.shape[1], m)) for idx, m in enumerate(l)])
