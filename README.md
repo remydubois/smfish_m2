@@ -51,7 +51,7 @@ Below are typical images from confocal microscopy we work with (channels left to
 ### Spot detection 
 (DoG filtering + local max filter in the [x, y, z, kernel size] dimensions)
 Zoom in:
-![250x250](/readme_images/spot_detection_in_situ.png)
+![50x50](/readme_images/spot_detection_in_situ.png)
 
 ### Nuclei segmentation from DAPI 
 (bi class Otsu thresholding)
