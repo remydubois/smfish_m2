@@ -86,6 +86,10 @@ cyt.segment(CytoSegmenter())
 ```
   
 ### Segmentation
-Contains script for training the UNET applied to segmentation of nuclei on cell mask images.
+Contains script for training the UNET applied to segmentation of nuclei on cell mask images. Implementation is in keras with several Tensorflow extra operators such as the loss function design, or the various callbacks (such as the tensorboard)
+- *feed_func.py* defines data generator and data augmentation operators.
+- *unet.py* defines the unet architecture. Strategy to segmend touching cells is the one proposed in the original paper (i.e. inserting an inter-cell furrow which corresponds to a specific class with a much higher weight). In practice, this weight is changed dynamically from balance (all class get the same weight) to its final value (usually 5x more weight given to the furrow class) through a keras callback.
+- *main.py* runs.
+The tensorboard implemented allows one to track segmentation results on the test set epoch per epoch (with ground truth and prediction enlightened).
 
  
