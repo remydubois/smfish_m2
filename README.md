@@ -45,23 +45,23 @@ The core of this project is to study subcellular localization patterns of mRNAs.
 - Luigi pipelines for image db handling, model training and evaluation
 
 ## Example of low level modules 
-Below are typical images from confocal microscopy we work with (channels left to right: smFISH, DAPI, cell mask):
-<img src="/readme_images/multichannel.png" width="250">
+Below are typical images from confocal microscopy we work with (channels left to right: smFISH, DAPI, cell mask): <br/>
+<img src="/readme_images/multichannel.png" width="450">
 
 ### Spot detection 
-(DoG filtering + local max filter in the [x, y, z, kernel size] dimensions) \n
+(DoG filtering + local max filter in the [x, y, z, kernel size] dimensions) <br/>
 Zoom in:
-<img src="/readme_images/spot_detection_in_situ.png" width="400">
+<img src="/readme_images/spot_detection_in_situ.png" width="450">
 
 ### Nuclei segmentation from DAPI 
-(bi class Otsu thresholding)
-Zoom in:
-<img src="/readme_images/segmented_DAPI.png" width="250">
+(bi class Otsu thresholding) <br/>
+Zoom in: <br/>
+<img src="/readme_images/segmented_DAPI.png" width="450">
 
 ### Nuclei segmentation from cell mask 
-(bi class UNET trained on images segmented with the above method):
-Zoom in:
-<img src="/readme_images/segmented_DAPI_CM.png" width="250">
+(bi class UNET trained on images segmented with the above method):  
+Zoom in:  
+<img src="/readme_images/segmented_DAPI_CM.png" width="450">
 
 ### Cytoplasm segmentation from cell mask 
 (GMM thresholding for mask segmentation + watershed segmentation of touching cells):
