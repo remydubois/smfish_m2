@@ -85,11 +85,25 @@ cyt.load("path", dapi.nuclei)
 cyt.segment(CytoSegmenter())
 ```
   
-### Segmentation
+#### Segmentation sub nodule
 Contains script for training the UNET applied to segmentation of nuclei on cell mask images. Implementation is in keras with several Tensorflow extra operators such as the loss function design, or the various callbacks (such as the tensorboard)
 - *feed_func.py* defines data generator and data augmentation operators.
 - *unet.py* defines the unet architecture. Strategy to segmend touching cells is the one proposed in the original paper (i.e. inserting an inter-cell furrow which corresponds to a specific class with a much higher weight). In practice, this weight is changed dynamically from balance (all class get the same weight) to its final value (usually 5x more weight given to the furrow class) through a keras callback.
-- *main.py* runs.
+- *main.py* runs.  
 The tensorboard implemented allows one to track segmentation results on the test set epoch per epoch (with ground truth and prediction enlightened).
 
+
+### Squences
+This module implements attemps to generate cell landscape using variational autoencoders. No approach has yielded satisying results as of now. 
+
+### Classification
+Contains all the script necessary to train classification model. Are implemented a pre-trained Inception v3 and a Squeezenet.
+- *Augmentation.py* defines all the data augmentation operations used for training the model. All those operations were heavily optimized for speed.
+- *Preprocessing.py* defines the Luigi tasks called before training the model, i.e. turning the raw data (multiple unstructured jsons) into cleaner dataframes. Those dataframes carry only indices (sets of points defining the cell membrane, nuclei membrane, mRNAs).
+- *Callbacks.py* defines the keras callbacks used during training (tensorboard and others)
+- *mnist_poc.py* contains objects and methods used to implement the *Unsupervised domain adaptation by backpropagation* and *Deep Reconstruction-Classification Networks for Unsupervised Domain Adaptation* papers for domain adaptation, tested againt the MNIST dataset (reproducing the papers)
+- *models.py* defines the keras models used.
+- *Tools.py* could be disregarded.
+- *utils.py* 
+- **main.py** defines the various Luigi tasks such as training any of the models, evaluating them, predicting on real data with some trained model, etc.
  
