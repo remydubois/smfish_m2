@@ -74,6 +74,7 @@ Zoom in:
 Contains all the low level features such as: filtering (gaussian flavored filters or FFT filtering) in *filters*, segmentation (morphological segmentation of nuclei or cytoplasms) (segmentation.py), spot detection in *spotdetector.py*, along with some visualization scripts (basic) in *vizu.py* , and all the utils. The *tools.py* file contains some parallelization tools.   *Tools.py*, *useable_functions.py*, *fitters.py*, *smFISHanalyser.py* could be disregarded as they implement deprecated methods.  
    
 The **Image.py** file defines the mother classes (i.e. FQimage for the smFISH channel, DAPIimage, CYTimage) which will call all the methods defined in the files mentioned above. It implements the I/O for readig tiff images, use case:  
+1) For FQ images
 ```python 
 fqimage = FQimage()
 fqimage.load("path_to_image", shape=(1024, 1024, 35), dtype='uint16')
@@ -88,6 +89,29 @@ fqimage.detect_and_fit(detector=DoG)
 # Show spots
 fqimage.show_spots()
 ```
+
+2) For DAPI images
+```python
+dapi = DAPIimage()
+dapi.load("path", shape=(512, 512, 35))
+
+# Segment using Otsu (fastest method but not the most robust)
+dapi.segment(sg=FastNuclei())
+
+# Show nuclei
+dapi.show_nuclei()
+```
+
+3) For cell mask images, which need to be loaded along with identified nuclei for segmentation.
+```python
+cyt = CYTimage()
+cyt.load("path", dapi.nuclei)
+cyt.segment(CytoSegmenter())
+```
+
+
+
+
 
 
  
