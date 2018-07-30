@@ -66,6 +66,8 @@ Zoom in:
 ### Cytoplasm segmentation from cell mask 
 (GMM thresholding for mask segmentation + watershed segmentation of touching cells):  
 Zoom in:  
-<img src="/readme_images/combined.png" width="450">
+<img src="/readme_images/combined.png" width="700">
+
+
 
 
