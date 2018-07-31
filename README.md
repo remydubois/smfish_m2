@@ -14,8 +14,8 @@ The core of this project is to study subcellular localization patterns of mRNAs.
 
 ### Mid level modules
 - Single-cell image classification into identified localization patterns
-- Supervised semantic segmentation of nuclei from the **cell mask channel**
-- Supervised semantic segmentation of individual cells from the cell mask chanenl (not completely mature)
+- Unsupervised semantic segmentation of nuclei from the **DAPI channel**
+- Supervised semantic segmentation of individual cells from the cell mask channel (not completely mature)
 
 ### High level modules
 - Luigi pipelines for image db handling, model training and evaluation
@@ -85,15 +85,15 @@ cyt.load("path", dapi.nuclei)
 cyt.segment(CytoSegmenter())
 ```
   
-#### Segmentation sub nodule
+#### Segmentation sub module
 Contains script for training the UNET applied to segmentation of nuclei on cell mask images. Implementation is in keras with several Tensorflow extra operators such as the loss function design, or the various callbacks (such as the tensorboard)
 - *feed_func.py* defines data generator and data augmentation operators.
-- *unet.py* defines the unet architecture. Strategy to segmend touching cells is the one proposed in the original paper (i.e. inserting an inter-cell furrow which corresponds to a specific class with a much higher weight). In practice, this weight is changed dynamically from balance (all class get the same weight) to its final value (usually 5x more weight given to the furrow class) through a keras callback.
+- *unet.py* defines the unet architecture. Strategy to segmend touching cells is the one proposed in the original paper (i.e. inserting an inter-cell furrow which corresponds to a specific class with a much higher weight). In practice, this weight is changed dynamically from balanced (all class get the same weight) to its final value (usually 5x more weight given to the furrow class) through a keras callback.
 - *main.py* runs.  
 The tensorboard implemented allows one to track segmentation results on the test set epoch per epoch (with ground truth and prediction enlightened).
 
 
-### Squences
+### Sequences
 This module implements attemps to generate cell landscape using variational autoencoders. No approach has yielded satisying results as of now. 
 
 ### Classification
@@ -101,7 +101,7 @@ Contains all the script necessary to train classification model. Are implemented
 - *Augmentation.py* defines all the data augmentation operations used for training the model. All those operations were heavily optimized for speed.
 - *Preprocessing.py* defines the Luigi tasks called before training the model, i.e. turning the raw data (multiple unstructured jsons) into cleaner dataframes. Those dataframes carry only indices (sets of points defining the cell membrane, nuclei membrane, mRNAs).
 - *Callbacks.py* defines the keras callbacks used during training (tensorboard and others)
-- *mnist_poc.py* contains objects and methods used to implement the *Unsupervised domain adaptation by backpropagation* and *Deep Reconstruction-Classification Networks for Unsupervised Domain Adaptation* papers for domain adaptation, tested againt the MNIST dataset (reproducing the papers)
+- *mnist_poc.py* contains objects and methods used to implement the *Unsupervised domain adaptation by backpropagation* and *Deep Reconstruction-Classification Networks for Unsupervised Domain Adaptation* papers for domain adaptation, tested against the MNIST dataset (reproducing the papers)
 - *models.py* defines the keras models used.
 - *Tools.py* could be disregarded.
 - *utils.py* 
