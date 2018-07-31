@@ -36,7 +36,6 @@ import sys
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-BATCH_SIZE = 50
 
 if '/Users/remydubois/anaconda3/lib/python3.6' in sys.path:
     LOCAL = '/Users/remydubois/Dropbox/Remy/results/'
@@ -44,15 +43,6 @@ else:
     LOCAL = '/cbio/donnees/rdubois/results/'
 
 
-# config = keras.backend.tf.ConfigProto(intra_op_parallelism_threads=4,
-#                                       inter_op_parallelism_threads=2,
-#                                       log_device_placement=True)
-# keras.backend.set_session(keras.backend.tf.Session(config=config))
-
-# from tensorflow.python.client import device_lib
-# print(device_lib.list_local_devices())
-
-# Load dataset into batch generators:
 @inherits(Merge)
 class Split(luigi.Task):
     """
@@ -91,6 +81,11 @@ class Split(luigi.Task):
 
 @inherits(Split)
 class MixandSplit(luigi.Task):
+    """
+    This task is intended at generating mixed datasets of synthetic and real images. 
+    Synthetic images are sampled from the 300,000 generated images in order to have the same #RNAs per cell distribution.
+    """
+
     repeatsyn = luigi.FloatParameter(default=2.)
     repeatreal = luigi.FloatParameter(default=1.)
 
@@ -167,6 +162,10 @@ class MixandSplit(luigi.Task):
 
 @inherits(Split)
 class Train(luigi.Task):
+    """
+    Trains a model on the synthetic data. Supports multi GPU assignment.
+    """
+
     logdir = luigi.Parameter(default='')
     gpu = luigi.Parameter(default='0')
     channels = luigi.Parameter(default='all')
@@ -319,6 +318,9 @@ class Train(luigi.Task):
 
 @inherits(MixandSplit)
 class TrainDA(luigi.Task):
+    """
+    Trains a model with a domain adaptation strategy. As of now it implements Unsupervised Domain Adaptation with Backpropagation.
+    """
     lam = luigi.FloatParameter(default=0.5)
     lambdaloc = luigi.FloatParameter(default=5.)
     # logdir = luigi.Parameter()
@@ -469,6 +471,9 @@ class TrainDA(luigi.Task):
 
 # @inherits(MixandSplit)
 class TrainMNIST(luigi.Task):
+    """
+    Domain Adaptation tryouts on the MNIST dataset.
+    """
     lam = luigi.FloatParameter(default=.5)
     lambdaloc = luigi.FloatParameter(default=5.)
     epochs = luigi.IntParameter(default=120)
@@ -632,6 +637,9 @@ class TrainMNIST(luigi.Task):
 
 
 class ReconstructorMNIST(luigi.Task):
+    """
+    Domain adaptation tryouts using DRCN (Deep Reconstruction Classifcation neural networks), as per the paper.
+    """
     lam = luigi.FloatParameter(default=.5)
     lambdaloc = luigi.FloatParameter(default=5.)
     epochs = luigi.IntParameter(default=120)
