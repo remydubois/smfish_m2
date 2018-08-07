@@ -2,6 +2,7 @@ from keras.layers import Input, merge, Conv2D, MaxPooling2D, UpSampling2D, Dropo
 from argparse import ArgumentParser
 import keras.backend as K
 import tensorflow as tf
+from skimage.morphology import disk, erosion
 
 def depthwise_softmax(x):
 
@@ -9,6 +10,22 @@ def depthwise_softmax(x):
     # softmax_tensor = exp_tensor / K.sum(exp_tensor, axis=-1, keepdims=True)
 
     return exp_tensor / K.sum(exp_tensor, axis=-1, keepdims=True)
+
+
+def channelwise_structure(radiuses):
+    np_structure = numpy.ones((2 * max(radiuses) + 1, 2 * max(radiuses) + 1, len(radiuses)))
+    structures = []
+    np_structure = numpy.stack([erosion(disk(radius), disk(radius)), erosion(disk(radius), disk(radius)), disk(radius)], axis=-1)
+    structure = tf.constant(np_structure, dtype='float32')
+    return structure
+
+def binary_closing(input, structure):
+    
+    dilated = tf.nn.dilation2d(input, structure, [1, 1, 1, 1], [1, 1, 1, 1], padding="SAME")
+
+    eroded = tf.nn.erosion2d(dilated, structure, [1, 1, 1, 1], [1, 1, 1, 1], padding="SAME")
+
+    return eroded
 
 
 def unet_output(inputs, n_classes=2):
@@ -57,7 +74,7 @@ def unet_output(inputs, n_classes=2):
     merge9 = concatenate([conv1, up9], -1)
     conv9 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='glorot_normal', name='conv21')(merge9)
     conv9 = Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='glorot_normal', name='conv22')(conv9)
-    conv9 = Conv2D(n_classes, 3, activation='relu', padding='same', kernel_initializer='glorot_normal', name='conv23')(conv9)
+    conv9 = Conv2D(8, 3, activation='relu', padding='same', kernel_initializer='glorot_normal', name='conv23')(conv9)
     conv10 = Conv2D(n_classes, 1, activation='softmax', name='conv24')(conv9)
     
     return conv10

@@ -321,14 +321,13 @@ class TrainDA(luigi.Task):
     """
     Trains a model with a domain adaptation strategy. As of now it implements Unsupervised Domain Adaptation with Backpropagation.
     """
-    lam = luigi.FloatParameter(default=0.5)
-    lambdaloc = luigi.FloatParameter(default=5.)
-    # logdir = luigi.Parameter()
-    gpu = luigi.Parameter(default='None')
-    batchsize = luigi.IntParameter(default=60)
-    domainweight = luigi.FloatParameter(default=0.5)
-    fex = luigi.Parameter(default='simple')
-    epochs = luigi.IntParameter(default=50)
+    lam = luigi.FloatParameter(default=0.5, description=' Final value of the lambda parameter controlling tradeoff between domain classification loss and digit classification loss.')
+    lambdaloc = luigi.FloatParameter(default=5., description='Time parameter controlling the moment lambda reaches its maximum value (in #epochs).')
+    gpu = luigi.Parameter(default='None', description='GPU to use, should be disabled when used with any cluster manager such as SLURM.')
+    batchsize = luigi.IntParameter(default=32, description='batch size to use.')
+    domainweight = luigi.FloatParameter(default=0.5, description='Should stick to default value, controlling lam is better.')
+    fex = luigi.Parameter(default='simple', description='feature extractor to use, "simple" for a simple stack of convolutional layers (3), "sqn" for a more complex squeezenet-like architecture.')
+    epochs = luigi.IntParameter(default=50, description='Number of epochs to use for training, early stopping is implemented anyway.')
 
     def requires(self):
         return self.clone(MixandSplit)

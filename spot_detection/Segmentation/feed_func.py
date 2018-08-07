@@ -109,4 +109,4 @@ def batch_generator(it, batch_size=10, repeat=1, tocategorical=True):
 
     while True:
         image, mask = list(zip(*[next(insider) for _ in range(batch_size)]))
-        yield numpy.stack(image, axis=0)[..., numpy.newaxis], to_categorical(numpy.stack(mask, axis=0)) if tocategorical else numpy.stack(image, axis=0)
+        yield numpy.stack(image, axis=0)[..., numpy.newaxis], to_categorical(numpy.stack(mask, axis=0)) if tocategorical else numpy.stack(mask, axis=0)

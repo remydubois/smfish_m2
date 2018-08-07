@@ -22,39 +22,53 @@ else:
     LOCAL_TARGET = '/cbio/donnees/rdubois/results/'
     LOCAL_SOURCE = '/mnt/data40T_v2/rdubois/data/segmented/'
 
-parser = argparse.ArgumentParser(description='Train vae.')
+parser = argparse.ArgumentParser(description='Train Unet for segmentation of Nuclei and/or individual cells from cell mask channel.')
 parser.add_argument('--epochs',
                     type=int,
-                    default=10
+                    default=10,
+                    help='Number of epochs for which to train, there is no early stopping yet because of the high unstability of the training procedure.'
                     )
 parser.add_argument('--batch_size',
                     type=int,
-                    default=10
+                    default=5,
+                    help='Batch size used for optimization, 10 images already leads to a memory overload.'
                     )
 parser.add_argument('--logdir',
-                    default='unet/'
+                    default='unet/',
+                    help='DEPRECATED, the logdir name is only conditioned by the parameters input.'
                     )
 parser.add_argument('--predict',
                     type=int,
-                    default=1
-                    )
-parser.add_argument('--generate',
-                    type=int,
-                    default=1
+                    default=1,
+                    help='DEPRECATED, useless with the last Tensorboard implementated in callbacks.'
                     )
 parser.add_argument('--repeat',
                     type=int,
-                    default=10
+                    default=10,
+                    help='Number of time to repeat the initial dataset, heavy data augmentation allows to go up to 15 to obtain a good generalization error.'
                     )
 parser.add_argument('--gpu',
-                    default="0"
+                    default="0",
+                    help='GPU to use for training, should be disabled if the training is operated on SLURM or any other cluster manager.'
                     )
 parser.add_argument('--weights',
-                    default="1,1,1"
+                    default="1,1,1",
+                    help='Weights given to each class. If two, only nuclei are segmented. If three, background, cells and cell borders are segmented, if four, all elements are segmented.'
                     )
 parser.add_argument('--pretrain',
                     type=int,
-                    default=0
+                    default=0,
+                    help='Whether to use a pretrained model (i.e. with all weights equal to one).'
+                    )
+parser.add_argument('--focal',
+                    type=float,
+                    default=0.75,
+                    help='Scaling parameter used for the Focal loss.'
+                    )
+parser.add_argument('--mix',
+                    type=float,
+                    default=0.,
+                    help='Tradeoff between focal loss and dice loss. Loss = mix * diceloss + (1 - mix) * focal_loss'
                     )
 
 
@@ -111,7 +125,7 @@ if __name__ == '__main__':
     # print(weights)
     W = K.variable(numpy.ones_like(weights), dtype='float32', name='weights')
     
-    def loss(y_true, y_pred):   
+    def focal_loss(y_true, y_pred):   
         """
         TODO why not simply tmp = (y_true * y_pred); tmp[...,i] *= weight[i]; return -tf.reduce_sum(tmp, ) with clip etc dont mess with the acis in reduce sum. 
         check source below
@@ -127,13 +141,23 @@ if __name__ == '__main__':
         _epsilon = tf.convert_to_tensor(1e-7, y_pred.dtype.base_dtype)
         y_pred = tf.clip_by_value(y_pred, _epsilon, 1. - _epsilon)
         
-        prod = y_true * tf.log(y_pred)
+        prod = y_true * tf.log(y_pred) * tf.pow(1 - y_pred, args.focal)
         
         prod *= weight_tensor
 
         return - tf.reduce_sum(prod, -1)
+
+    def dice_loss(y_true, y_pred):
+        intersection = K.sum(K.abs(y_true * y_pred), axis=-1)
+
+        return 1 - (2. * intersection + 100) / (K.sum(K.square(y_true),-1) + K.sum(K.square(y_pred),-1) + 100)
     
-    logdir = 'UNET/unet_' + args.weights # + '_jac/'
+
+    def mixed_loss(y_true, y_pred):
+        return args.mix * dice_loss(y_true, y_pred) + (1 - args.mix) * focal_loss(y_true, y_pred)
+
+
+    logdir = 'UNET/unet_' + args.weights + '_mix' + str(args.mix) + '_newdata2/'
     
     if not os.path.exists(LOCAL_TARGET + logdir):
         os.mkdir(LOCAL_TARGET + logdir)
@@ -141,18 +165,20 @@ if __name__ == '__main__':
         shutil.rmtree(LOCAL_TARGET + logdir)
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
-    stack = numpy.load(LOCAL_SOURCE + 'cm_IB_dapi_conf2.npy')
+    # stack = numpy.load(LOCAL_SOURCE + 'cm_IB_dapi_conf2.npy')
+    stack = numpy.load(LOCAL_SOURCE + 'cm_bounds_conf.npy')
     data = stack[:, :2, :, :]
-    if weights.shape[-1] > 3:
-        data[:, 1, ...][stack[:, 2, ...]==1] = 3
-    if weights.shape[-1] < 3:
-        data[:, 1, ...] = stack[:, 2, ...]
+    data[:, 1] = (data[:, 1] == 2).astype(int)
+    # if weights.shape[-1] > 3:
+    #     data[:, 1, ...][stack[:, 2, ...]==1] = 3
+    # if weights.shape[-1] < 3:
+    #     data[:, 1, ...] = stack[:, 2, ...]
     # if weights.shape[-1] == 3:
     #     data[:, 1, ...][data[:, 1, ...]==2] = 1
     #     data[:, 1, ...][stack[:, 2, ...]==1] = 2
     
     train_set, test_set = train_test_split(data, train_size=0.8, test_size=0.2)
-    train_generator = batch_generator(train_set, batch_size=args.batch_size, repeat=args.repeat)
+    train_generator = batch_generator(train_set, batch_size=args.batch_size, repeat=args.repeat, tocategorical=True)
     Xtest = test_set[:,0, :, :, numpy.newaxis] / numpy.iinfo(test_set[:, 0].dtype).max
     ytest = to_categorical(test_set[:, 1].astype(int))
     n_steps_train = (args.repeat * train_set.shape[0]) // args.batch_size
@@ -171,7 +197,7 @@ if __name__ == '__main__':
     
     unet.compile(
         optimizer='adam', 
-        loss=loss, 
+        loss=dice_loss, 
         metrics=['acc'])
 
     earl = EarlyStopping(monitor='val_loss', min_delta=0, patience=10)
@@ -180,7 +206,7 @@ if __name__ == '__main__':
     tb = MyTB2(log_dir=LOCAL_TARGET + logdir, save_predictions=True, histogram_freq=0, write_graph=False, extra=W[0, 0, 0, 2] if weights.shape[-1] > 2 else None)
     red = ReduceLROnPlateau('val_loss', factor=0.5, patience=5)
     cbs = [mck, tb, red]
-    if weights.shape[-1] > 2:
+    if weights.shape[-1] == 2:
         vc = VarChanger(W, scale=weights, loc=15 * n_steps_train)
         cbs += [vc]
     # # Build class weights:

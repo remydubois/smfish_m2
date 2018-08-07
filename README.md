@@ -14,7 +14,7 @@ The core of this project is to study subcellular localization patterns of mRNAs.
 
 ### Mid level modules
 - Single-cell image classification into identified localization patterns
-- Unsupervised semantic segmentation of nuclei from the **DAPI channel**
+- Supervised semantic segmentation of nuclei from the **Cell mask channel**
 - Supervised semantic segmentation of individual cells from the cell mask channel (not completely mature)
 
 ### High level modules
@@ -91,6 +91,40 @@ Contains script for training the UNET applied to segmentation of nuclei on cell 
 - *unet.py* defines the unet architecture. Strategy to segmend touching cells is the one proposed in the original paper (i.e. inserting an inter-cell furrow which corresponds to a specific class with a much higher weight). In practice, this weight is changed dynamically from balanced (all class get the same weight) to its final value (usually 5x more weight given to the furrow class) through a keras callback.
 - *main.py* runs.  
 The tensorboard implemented allows one to track segmentation results on the test set epoch per epoch (with ground truth and prediction enlightened).
+
+Use case:
+```
+Train Unet for segmentation of Nuclei and/or individual cells from cell mask
+channel.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --epochs EPOCHS       Number of epochs for which to train, there is no early
+                        stopping yet because of the high unstability of the
+                        training procedure.
+  --batch_size BATCH_SIZE
+                        Batch size used for optimization, 10 images already
+                        leads to a memory overload.
+  --logdir LOGDIR       DEPRECATED, the logdir name is only conditioned by the
+                        parameters input.
+  --predict PREDICT     DEPRECATED, useless with the last Tensorboard
+                        implementated in callbacks.
+  --repeat REPEAT       Number of time to repeat the initial dataset, heavy
+                        data augmentation allows to go up to 15 to obtain a
+                        good generalization error.
+  --gpu GPU             GPU to use for training, should be disabled if the
+                        training is operated on SLURM or any other cluster
+                        manager.
+  --weights WEIGHTS     Weights given to each class. If two, only nuclei are
+                        segmented. If three, background, cells and cell
+                        borders are segmented, if four, all elements are
+                        segmented.
+  --pretrain PRETRAIN   Whether to use a pretrained model (i.e. with all
+                        weights equal to one).
+  --focal FOCAL         Scaling parameter used for the Focal loss.
+  --mix MIX             Tradeoff between focal loss and dice loss. Loss = mix
+                        * diceloss + (1 - mix) * focal_loss
+```
 
 
 ### Sequences
