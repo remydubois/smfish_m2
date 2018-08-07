@@ -150,13 +150,13 @@ python main.py Train --local-scheduler --logdir 'test' --gpu '0,1,2' --model 'sq
 ```
 python main.py TrainDA --local-scheduler --lam 0.5 --gpu '0' --fex 'simple'
 ```  
-<img src="/readme_images/unsupervised_DA.png" width="450">  
+<img src="/readme_images/unsupervised_DA.png" width="650">  
 
 3) Train in a domain adaptation fashion following 'Deep Reconstruction-Classification Networks for Unsupervised Domain Adaptation', Ghifary, Kleijn, Zhang, Balduzzi, Li (2016). Only implemented for a proof of concept on the MNIST dataset.
-<img src="/readme_images/DRCNN.png" width="450">  
 ```
 python main.py ReconstructorMNIST --local-scheduler
-```
+```  
+<img src="/readme_images/DRCNN.png" width="650">  
 
 
  
